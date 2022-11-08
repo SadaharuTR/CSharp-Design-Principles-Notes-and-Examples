@@ -1,0 +1,15 @@
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Interface_Segregation_Principle\bin\Debug\net6.0\Interface_Segregation_Principle.exe
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Interface_Segregation_Principle\bin\Debug\net6.0\Interface_Segregation_Principle.deps.json
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Interface_Segregation_Principle\bin\Debug\net6.0\Interface_Segregation_Principle.runtimeconfig.json
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Interface_Segregation_Principle\bin\Debug\net6.0\Interface_Segregation_Principle.dll
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Interface_Segregation_Principle\bin\Debug\net6.0\Interface_Segregation_Principle.pdb
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Interface_Segregation_Principle\obj\Debug\net6.0\Interface_Segregation_Principle.csproj.AssemblyReference.cache
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Interface_Segregation_Principle\obj\Debug\net6.0\Interface_Segregation_Principle.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Interface_Segregation_Principle\obj\Debug\net6.0\Interface_Segregation_Principle.AssemblyInfoInputs.cache
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Interface_Segregation_Principle\obj\Debug\net6.0\Interface_Segregation_Principle.AssemblyInfo.cs
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Interface_Segregation_Principle\obj\Debug\net6.0\Interface_Segregation_Principle.csproj.CoreCompileInputs.cache
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Interface_Segregation_Principle\obj\Debug\net6.0\Interface_Segregation_Principle.dll
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Interface_Segregation_Principle\obj\Debug\net6.0\refint\Interface_Segregation_Principle.dll
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Interface_Segregation_Principle\obj\Debug\net6.0\Interface_Segregation_Principle.pdb
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Interface_Segregation_Principle\obj\Debug\net6.0\Interface_Segregation_Principle.genruntimeconfig.cache
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Interface_Segregation_Principle\obj\Debug\net6.0\ref\Interface_Segregation_Principle.dll

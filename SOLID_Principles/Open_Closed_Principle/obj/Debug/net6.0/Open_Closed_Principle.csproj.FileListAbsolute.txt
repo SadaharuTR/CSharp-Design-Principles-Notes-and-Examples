@@ -1,0 +1,15 @@
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Open_Closed_Principle\bin\Debug\net6.0\Open_Closed_Principle.exe
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Open_Closed_Principle\bin\Debug\net6.0\Open_Closed_Principle.deps.json
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Open_Closed_Principle\bin\Debug\net6.0\Open_Closed_Principle.runtimeconfig.json
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Open_Closed_Principle\bin\Debug\net6.0\Open_Closed_Principle.dll
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Open_Closed_Principle\bin\Debug\net6.0\Open_Closed_Principle.pdb
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Open_Closed_Principle\obj\Debug\net6.0\Open_Closed_Principle.csproj.AssemblyReference.cache
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Open_Closed_Principle\obj\Debug\net6.0\Open_Closed_Principle.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Open_Closed_Principle\obj\Debug\net6.0\Open_Closed_Principle.AssemblyInfoInputs.cache
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Open_Closed_Principle\obj\Debug\net6.0\Open_Closed_Principle.AssemblyInfo.cs
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Open_Closed_Principle\obj\Debug\net6.0\Open_Closed_Principle.csproj.CoreCompileInputs.cache
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Open_Closed_Principle\obj\Debug\net6.0\Open_Closed_Principle.dll
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Open_Closed_Principle\obj\Debug\net6.0\refint\Open_Closed_Principle.dll
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Open_Closed_Principle\obj\Debug\net6.0\Open_Closed_Principle.pdb
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Open_Closed_Principle\obj\Debug\net6.0\Open_Closed_Principle.genruntimeconfig.cache
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Open_Closed_Principle\obj\Debug\net6.0\ref\Open_Closed_Principle.dll

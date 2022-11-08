@@ -1,0 +1,905 @@
+Design Principles 
+
+- Yazılım prensipleri durumuna göre en ideal davranışları ortaya koymamızı sağlayan genel kodlama ahlakını temsil eder. En ideal kodlama ahlakını sağlayan
+üst prensiplerdir.
+
+Loose Coupling Principle (Esnek Bağ Prensibi)
+
+- Bütün prensiplerin temelidir.
+
+- Bir uygulama sürecinde işlevlerin gerçekleştirilebilmesi için nesneler üzerinden operasyonlar yürütülür. Bu nesneler kendi aralarında iş bir birliği yaparak
+birbirlerine hizmet sunmakta ve her biri görevlerini yerine getirerek uygulamayı meydana getirmektedirler. İşte bu iş birliği neticesinde nesneler arası
+ister istemez bağımlılıklar meydana gelebilmektedir.
+
+- Bir nesne, kullandığı diğer bir nesne hakkında ne kadar detaya/bilgiye sahipse o nesneye olan bağımlılık o oranda artmakta ve olası bir değişiklik ve olası
+bir onarılma durumunda bağımlı olan sınıfta da revizyonu gerekli kılmaktadır.
+
+- OOP tasarımlarında nesneler arasındaki bağımlılıkları yüzde yüz bir şekilde ortadan kaldırmanın pek mümkün olmadığını söylemekte fayda  vardır.
+Bundan dolayı nesneler arasındaki bağımlılıkları ortadan kaldıramıyorsak eğer mümkün olduğunca törpülemeli, bir başka deyişle bu bağımlılıkları
+yönetebilir hale getirmeliyiz.
+
+- İyi bir tasarım; bağımsızlığın olduğu değil, bağımlılıkların kontrol edildiği tasarımdır.
+
+MailSender.cs ---> Gmail.cs
+
+-Yukarıdaki gibi MailSender sınıfı Gmail sınıfını kullanıyorsa eğer MailSender, Gmail'e bağımlıdır deriz.
+Bu durumda MailSender, Gmail sınıfı olmaksızın görevini yerine getiremeyecektir.
+
+namespace Loose_Coupling;
+
+class MailSender
+{
+    public void Send()
+    {
+        //MailSender'ın mail gönderebilmek için bir tane gmail nesnesine ihtiyacı var.
+        Gmail gmail = new();
+        gmail.Send();
+        //MailSender içerisinde Constructor'da, Destructor'da Static Constructo'da Gmail olsaydı bağımlılık vardır.
+        //Yani bir sınıfın içerisinde farklı bir sınıfın nesnesini new operatörü ile üretiyorsak bağımlılık nettir.
+    }
+}
+class Gmail
+{
+    public void Send()
+    {
+        //...........
+    }
+}
+
+- Ayrıca Gmail sınıfında meydana gelebilecek yapısal herhangi bir değişiklik MailSender sınıfını da doğrudan etkileyecek ve gerekli düzenlemeleri
+zorunlu kılacaktır.
+
+namespace Loose_Coupling;
+
+class MailSender
+{
+    public void Send()
+    {
+        Gmail gmail = new(...); //constructor'daki değişiklik buraya da yansımalı. Yoksa hata verir.
+        gmail.Send(...); //hemen burada da değişikliği yansıtmamız lazım. Hata verir.    
+    }
+}
+class Gmail
+{
+    //ya da constructor'unda bir işlem yapmasını istedik;
+    public Gmail(string f)
+    {
+        //...........
+    }
+    public void Send(string to) //mesela parametre ekledik.
+    {
+        //...........
+    }
+}
+
+- Tüm bunların dışında MailSender'ın ihtiyaç dahilinde Gmail'in dışında farklı bir sınıfın nesnesini kullanması şu vaziyette pek mümkün değildir.
+
+namespace Loose_Coupling;
+
+class MailSender
+{
+    public void Send()
+    {
+        //Gmail gmail = new(); 
+        //gmail.Send("ahmet@gmail.com"); 
+        
+        //buradaki bağımlılıkltan dolayı biz MailSender'ın içerisinde durmadan operasyon yapmak zorundayız.
+        Hotmail hotmail = new Hotmail();
+        //farklı bir mail sunucusunu kulanabilmek için önce gidip gmail kaynak kodlarını silmem ve hotmail ile ilgili
+        //kodları oluşturmam lazım. 
+		
+		//yandex mail mi kullanmak istiyoruz? Yine değişiklik yapmak durumundayız.
+		//Tied Coupling - Sıkı Bağ durumu mevcut burada.
+    }
+}
+class Gmail
+{  
+    public void Send(string to) 
+    {
+        //...........
+    }
+}
+
+class Hotmail
+{
+    //......
+}
+
+- Bir sorunu ortadan kaldırabilmek için sınıflar arası ilişkilerin üzerinde yapısal değişikliğe gidilerek abstract class yahut interface'ler aracılığıyla
+bu ilişkilerinde sağlanması gerekmektedir.
+
+MailSender.cs -> IMailServer.cs (interface) -> (Gmail.cs) (Hotmail.cs) (Yandex.cs)
+
+- Buradaki mantığa göre artık IMailServer'ın interface'inden implement edilmiş olan bütün sınıflar MailSender tarafından tanımlanıp, kullanılabilecektir.
+Bu şekilde biz MailSender'ın diğer class'lara olan bağımlılığını törpülemiş olacağız. Yine bağımlılık mevcut ama artık ihtiyaca göre tercih şansımız var.
+Bağ artık esnek bir bağ. Loose Coupling.
+
+InDependency.cs
+
+namespace Loose_Coupling_InDependency;
+
+class MailSender
+{
+    public void Send(IMailServer mailServer) //artık MailSender, kullanacağı server neyse onu IMailServer türünden bir parametre ile alıyor.
+    {
+        mailServer.Send("derdiniderman@spiderman.com", "Peter");
+    }
+}
+interface IMailServer
+{
+    void Send(string to, string body); //IMailServerr içerisinde bir standart getiriyor. Ayrıca bu interface'i kullanan alt sınıflara bir düzen getiriyor.
+}
+
+class Gmail : IMailServer //mesela Gmail üzerinde bir değişiklik yapıldığında bu değişiklik MailSender'a yansımayacaktır.
+{
+    public void Send(string to, string body)
+    {
+        //bu sayede istediğimiz kadar Gmail sınıfında metotlarda, parametrelerde, constructor'larda çalışma gerçekleştirebiliriz.
+    }
+}
+class Hotmail : IMailServer
+{
+    public void Send(string to, string body)
+    {
+
+    }
+}
+class Yandex : IMailServer
+{
+    public void Send(string to, string body)
+    {
+
+    }
+}
+
+Program.cs
+
+//daha esnek olduk. Artık istediğimiz sunucuda çalışabiliriz.
+Loose_Coupling_InDependency.MailSender sender = new();
+
+sender.Send(new Loose_Coupling_InDependency.Gmail()); //burada değişiklik gmail'de ise sadece gmail ile sınırlı olacak.
+sender.Send(new Loose_Coupling_InDependency.Hotmail());
+
+//------------------
+
+//eski yapıda bağımlılık sürüyordu. Bu yapıda herhangi bir sunucu değiştirme isteği durumunda sorun yaşardık.
+Loose_Coupling_Dependency.MailSender sender2 = new();
+sender2.Send();
+
+--------------------
+
+SOLID PRINCIPLES
+
+Single Responsibility Principle (Tek Sorumluluk Prensibi) Nedir?
+
+- OOP tasarımlarında bir sınıfı mümkün olan mertebe tek bir sorumluluğa odaklı inşa edilmesi gerektiğini ilke olarak savunan bir prensiptir.
+
+- Bir sınıfın değiştirilmesi gereken birden fazla sebebi/motivasyonu/gerekçesi varsa eğer işte bu durum ilgili sınıfın birden fazla sorumluluğu
+olduğu anlamına gelmektedir.
+
+- SRP, bir sınıfın değişmesi için tek bir nedeni olması gerektiğini ifade etmekte ve inşa edilen kodun bu hassasiyetle üretilmesini savunmaktadır.
+
+- Bir sınıf yahut metot, işlevsel olarak birden fazla işi/operasyonu yürütüyorsa yani başka bir deyişle birden fazla sorumluluğu varsa bu istenmeyen
+bir durumdur.
+
+- Birden fazla sorumluluğun söz konusu olduğu yapılarda herhangi bir sorumluluktaki değişiklik, ilgili yapının üstlendiği diğer sorumlulukların
+tutarlılıklarını bozabilir yahut yürütülmelerini ister istemez engelleyebilir. Bu durumları bizler genellikle kırılgan tasarımlar olarak nitelendirmekteyiz.
+
+- Bir OOP tasarımında bir yapının tek başına birden fazla işi üstlenmesi yönetilebilirlik açısından gerçekten şık bir tasarım değildir. Neticede yazılım 
+sürecinde her bir sorumluluk bir işi, her bir işte bir amacı yani gayeyi temsil etmektedir. Bizler amaçlarımız doğrultusunda iş üretir ve bu iş neticesinde
+belirli sorumlulukları gerçekleştirecek olan yapıları inşa ederiz.
+
+- Her sorumluluk özünde bir değişim merkezidir. Çünkü yazılım süreçlerinde sorumlulukları şekillendiren gereksinimler değişken özellik göstermekte ve
+bu durum da sorumlulukların yürütüldüğü ilgiil yapıların sürekli revize edilmesini gerektirmektedir.
+
+- Bir sınıfın birden fazla sorumluluğu varsa eğer bu sorumluluklar her gereksinim değişikliğinde ilgili sınıf için ekstradan maliyete sebep verecektir. 
+Ayrıyeten yetmeyecek, her yeni yapılanma için yeniden test ve bakım maliyetleri de haddinden fazla artacaktır.
+
+- Tek sorumluluk prensibinin olmadığı bir durumda;
+
+Database.cs
+-Connect()
+-Disconnect()
+-prop State
+-GetPersons()
+
+Yukarıdaki Database sınıfı temel veritabanı işlemlerini mi üstleniyor?
+Person'lar ile ilgili işlemleri mi üstleniyor?
+
+Prensibe göre düzenlersek;
+
+Database.cs
+-Connect()
+-Disconnect()
+-prop State
+
+PersonelService.cs
+-GetPersons()
+
+olmalıdır.
+
+namespace Single_Responsibility_Principle_NotIdealCode;
+
+class Database
+{
+    public void Connect()
+    {
+        //..
+        Console.WriteLine("Veritabanı bağlantısı başarılı.");
+    }
+    public void Disconnect()
+    {
+        //..
+        Console.WriteLine("Veritabanı bağlantısı kesilmiştir.");
+    }
+    public string State { get; set; }
+
+    public List<Person> GetPersons() //veritabanı ile ilgili değil.
+    {
+        return new()
+        {
+            new() { Name = "Ali", Surname = "Taşıyanboğa"},
+            new() { Name = "Hakan", Surname = "Turtle"},
+            new() { Name = "Mahmut", Surname = "Ertunc"},
+        };
+    }
+}
+
+Düzenlersek;
+
+namespace Single_Responsibility_Principle_IdealCode;
+
+class Database
+{
+    public void Connect() //burada ayrı işleri yapan metotları ayırdık.
+    {
+        //..
+        Console.WriteLine("Veritabanı bağlantısı başarılı.");
+    }
+    public void Disconnect() //Connect ile Disconnect farklı işleri yapan metotlardır.
+    {
+        //..
+        Console.WriteLine("Veritabanı bağlantısı kesilmiştir.");
+    }
+    public string State { get; set; }
+   
+}
+
+class PersonService //burada ise ayrı işleri yapan class'ları ayırdık.
+{
+    public List<Person> GetPersons() //ilgili sınıfa taşıdık.
+    {
+        return new()
+        {
+            new() { Name = "Ali", Surname = "Taşıyanboğa"},
+            new() { Name = "Hakan", Surname = "Turtle"},
+            new() { Name = "Mahmut", Surname = "Ertunc"},
+        };
+    }
+}
+
+----------------------
+
+Open/Closed Principle (Açık/Kapalı Prensibi) Nedir?
+
+- OCP, OOP tasarımlarında bir sınıfın gereksinimler doğrultusunda değiştirmeye gerek duyulmaksızın genişletilebilir bir şekilde tasarlanmasını savunan
+bir prensiptir.
+
+- Kodun değiştirilmesi, var olanın yerine yeni gereksinime göre güncel halinin işlenmesidir.
+
+- Kodun genişletilmesi ise kodu değiştirmeksizin yeni gereksinime göre gelecek olan davranışın uygulamaya eklenebilmesidir.
+
+- Sisteme yeni gereksinimlerden dolayı dahil olması gereken yeni davranışlar ilgili arayüz sayesinde hızlıca entegre edilebilir olmaktadır.
+
+Olmaması gereken durum;
+
+namespace Open_Closed_Principle_NotIdealCode;
+
+class ParaGonderici
+{
+    public void Gonder(int tutar)
+    {
+        //Garanti garanti = new();
+        //garanti.HesapNo = "...";
+        //garanti.ParaGonder(tutar);
+
+        //Garanti'den Halkbank'a geçersen sadece referansları değiştirmekte kalmayıp, Halkban'a göre de olayı özelleştirmemiz gerekli.
+        HalkBank halkbank = new();
+        halkbank.GonderilecekHesapNo("1243213");
+        halkbank.Gonder(tutar);
+    }
+}
+
+//Benzer davranışları sergileyen iki sınıf arasında herhangi bir ortak çalışma-standart yok.
+class Garanti //Garanti ParaGonder fonksiyonuyla gonderme işlemini yaparken bir yandan da hesap numarasını property'den almakta.
+{
+    public string HesapNo { get; set; }
+    public void ParaGonder(int tutar)
+    {
+        //..
+    }
+}
+
+class HalkBank //Halkbank ise hesap numarasını metottan karşılayıp, Gonder metodu ile de para gönderme işlemini sağlıyor.
+{
+    string hesapNo;
+    public void GonderilecekHesapNo(string hesapNo)
+    {
+
+    }
+    public void Gonder(int tutar)
+    {
+
+    }
+}
+
+Olması gereken;
+
+namespace Open_Closed_Principle_IdealCode;
+
+class ParaGonderici
+{
+    public void Gonder(IBanka banka, int tutar, string hesapNo) //bu interface'e hangi nesne verildiyse onun para transferi fonksiyonunu çalıştır.
+    {
+        banka.ParaTransferi(tutar, hesapNo); //Loose Coupling'i burada uygulamış olduk.
+    }
+}
+
+interface IBanka //sistemde kullanılacak tüm davranışların üst referansı gibi düşünülebilir.
+{
+    bool ParaTransferi(int tutar, string hesapNo);  
+}
+class Garanti : IBanka 
+{
+    public string HesapNo { get; set; }
+    public void ParaGonder(int tutar)
+    {
+        //..
+    }
+
+    bool IBanka.ParaTransferi(int tutar, string hesapNo)
+    {
+        try
+        {
+            HesapNo = hesapNo;
+            ParaGonder(tutar);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+}
+
+class HalkBank : IBanka 
+{
+    string hesapNo;
+    public void GonderilecekHesapNo(string hesapNo)
+    {
+
+    }
+    public void Gonder(int tutar)
+    {
+
+    }
+
+    public bool IBanka.ParaTransferi(int tutar, string hesapNo)
+    {
+        try
+        {
+            GonderilecekHesapNo(hesapNo);
+            Gonder(tutar);
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+}
+
+Program.cs'de kullanırken,
+
+Open_Closed_Principle_IdealCode.ParaGonderici paraGonderici = new();
+paraGonderici.Gonder(new Open_Closed_Principle_IdealCode.Garanti(), 100, "numarasi");
+
+//paraGonderici.Gonder(new Open_Closed_Principle_IdealCode.HalkBank(), 100, "numarasi");
+
+
+ile de OCP'yi uygulamış olduk.
+
+Günün birinde farklı bir banka eklemek istedik.
+
+class ABankasi{...} oluşturup IBanka'dan türeterek, kodumuzu değiştirmeye gerek kalmadan genişletebiliriz. 
+
+Program.cs'de ABankasi'ni kullanmak için,
+
+paraGonderici.Gonder(new Open_Closed_Principle_IdealCode.ABankasi(), 100, "numarasi");
+
+yazmamız yeterli olacaktır.
+
+- Biz Loose Coupling'in bize getirmiş olduğu işlevi kullanarak arayüz sayesinde bu arayüzden türeyen sistemimizdeki tüm sınıfları
+karşılayabilir bir sınıf inşa ediyoruz. Ve gereksinimler değişse de burada bu arayüzün karşıladığı bir nesne oldukça bu değişikliği
+karşılayabilir hale getiriyoruz.  İşte Open/Closed Principle budur.
+
+- Bir kod genişlemeye açık, değişime kapalı olduğu takdirde ideal koddur.
+
+OCP'nin faydaları;
+
+-Sürdürülebilirdir.
+-Genişletilebilirdir.
+-Yeniden kullanılabilirdir.
+-Esneklik kazandırır.
+
+Böylece kodun gelen yeni gereksinimlere göre değişiklik direncini kıracak ve geliştiriciyi bu değişiklik süreçlerindeki maaliyetlerin getirdiği
+yığınlardan soyutlayacaktır.
+
+-------------------
+
+Liskov Substitution Principle (Liskov Yerine Geçme Prensibi)
+
+- Ortak bir referanstan türeyen nesnelerin hiçbir şeyi bozulmadan birbirleriyle değiştirilebilmesi gerektiğini yani birbirlerinin
+yerine geçebilmesi gerektiğini öneren bir prensiptir.
+
+- Eğer bir sınıf, herhangi bir interface yahut abstract class ile sözleşme yapıyorsa o zaman bu sözleşmeyi karşılamalı ve gerekli tüm memberları
+içerisinde tanımlamalıdır. Lakin bu memberlardan boş ve işlevsiz olan varsa orada bir problem var demektir.
+
+- Hiçbir alt sınıf uygulamış olduğu base class'ın metotlarını ihlal etmemelidir. Yani implement yahut override edilen hiçbir metot boş kalmamalı
+veya boş kalmasın diye Not Implemented Exception gibi hatalar döndürülmemelidir.
+
+- Eğer böyle bir durum söz konusuysa bu nesneler birbirlerinin yerine geçebilirler lakin ister istemez hatalar meydana gelebilir.
+
+- Bu tür bir durumdaki class'lar polimorfizm kuralı gereği kendi aralarında yer değiştirebilir ama içlerindeki kimi memberlar işlevsiz kalacakları için
+çalışma sürecinde patlamalara sebebiyet verebilirler. Bu memberlarda exception throw edilmeyip (içi boş) pasif işlerde de tanımlanabilirlerdi. Yine de bu
+durum farketmeyecek, bu sınıfları kendi aralarında değiştirirken emin bir şekilde kullanım sergileyemeyecektik.
+
+- Ortak referanstan türeyen bu sınıflar birbirleriyle yer değiştiriyor olsa da ister istemez, patlayan metodumuz hepsi için bir anlam/işlem ifade etmediğinden
+kullanırken hataya sebebiyet verebilirler. İşte bu duru Liskov Prensibinin savunduğu noktadır. LSP bu noktada nesnelere sadece gerçek davranışlarını
+barındırmasını önerir. Özellikle herhangi bir arayüzü yahut abstract class'ı uygulandığında bu arayüzün garanti ettiği gibi davranması gerektiğini ifade
+eder.
+
+- Yani, tüm class'lara implement edilen member'lar davranışı sergilemelidir. LSP burada ilgili member'ı ilgili class'a tanımlayacağımız tarzda bir tasarım
+yapmamızı ya da tanımladıysakta kullanmamız gerektiğini vurgular. Aksi taktirde bu sınıflar ortak atdan gelseler dahi kendi aralarında ehemmiyetli
+bir şekilde yer değiştiremezler. Polimorfizm kuralları gereği değiştirse de davranışsal açıdan risk taşıyabilirler.
+
+Önce ideal olmayan durumu inceleyelim.
+
+namespace Liskov_Substituition_Principle_NotIdealCode;
+
+//Amazon ve Google'ın translate işlemleri mevcutken, Azure böyle bir hizmet sunmamakta.
+abstract class Cloud
+{
+    public abstract void Translate();
+    public abstract void MachineLearning();
+}
+
+class AWS : Cloud
+{
+    public override void Translate() => Console.WriteLine("AWS Translate");
+    public override void MachineLearning() => Console.WriteLine("AWS Machine Learning");
+}
+
+class Azure : Cloud
+{
+    public override void Translate() => throw new NotImplementedException(); //fakat yine de burayı zorunlu olarak implement ettik.
+    public override void MachineLearning() => Console.WriteLine("Azure Machine Learning");
+}
+
+class Google : Cloud
+{
+    public override void Translate() => Console.WriteLine("Google Translate");
+    public override void MachineLearning() => Console.WriteLine("Google Machine Learning");
+}
+
+//işte buna kötü tasarım diyoruz. Liskov uygulanmalı. 
+
+program.cs'te
+
+using Liskov_Substituition_Principle_NotIdealCode;
+
+Cloud cloud = new AWS();
+cloud.MachineLearning();
+cloud.Translate();
+
+cloud = new Google();
+cloud.MachineLearning();
+cloud.Translate();
+
+cloud = new Azure();
+cloud.MachineLearning();
+cloud.Translate(); //Azure'da translate kullanamıyoruz. Fakat geliştirici bunu bilmiyor. Talepte bulunurken yukarıdaki kodlar çalışacak ama burası patlayacak.
+
+Çıktı:
+AWS Machine Learning
+AWS Translate
+Google Machine Learning
+Google Translate
+Azure Machine Learning
+
+fakat Azure'un Translate'de, 
+System.NotImplementedException: 'The method or operation is not implemented.' hatası alırız.
+
+if(cloud is not Azure)
+{
+	cloud.Translate();
+}
+
+tarzı sıvamalar yapabiliriz. Ama ne gerek var.
+
+Ideal Kodumuzu yazarsak;
+
+namespace Liskov_Substituition_Principle_IdealCode;
+
+abstract class Cloud
+{
+    public abstract void MachineLearning(); //base class'ımızdan evrensel olmayan ember'ı çıkardır. Translate artık dışarıda.
+}
+
+interface ITranslatable //bizim bütün Cloud sınıf'larda olmayacak, sadece belirlilerinde olacak özelliklerimi ayrı interfate'lere aldık.
+{
+    void Translate();
+}
+class AWS : Cloud, ITranslatable
+{
+    public void Translate() => Console.WriteLine("AWS Translate");
+    public override void MachineLearning() => Console.WriteLine("AWS Machine Learning");
+}
+
+class Azure : Cloud //Azure cloud'unda Translate diye bir hizmet olmadığından dolayı sadece evrensel olan MachineLearning hizmeti mevcut.
+{
+    public override void MachineLearning() => Console.WriteLine("Azure Machine Learning");
+}
+
+class Google : Cloud, ITranslatable
+{
+    public void Translate() => Console.WriteLine("Google Translate");
+    public override void MachineLearning() => Console.WriteLine("Google Machine Learning");
+}
+
+program.cs'te ise
+
+using Liskov_Substituition_Principle_IdealCode;
+
+Cloud cloud = new AWS();
+cloud.MachineLearning();
+(cloud as ITranslatable)?.Translate(); //Amazon cloud yapılanması Translate'i desteklediği sürece Translate fonksiyonuna sahip olacaktır.
+
+cloud = new Google();
+cloud.MachineLearning();
+(cloud as ITranslatable)?.Translate(); //Google cloud yapılanması Translate'i desteklediği sürece Translate fonksiyonuna sahip olacaktır.
+
+cloud = new Azure();
+cloud.MachineLearning();
+(cloud as ITranslatable)?.Translate(); //Azure cloud yapılanması Translate'i desteklediği sürece Translate fonksiyonuna sahip olacaktır.
+
+Mis gibi oldu.
+
+Çıktı:
+AWS Machine Learning
+AWS Translate
+Google Machine Learning
+Google Translate
+Azure Machine Learning
+
+Hata mata yok.
+
+- Sonuç olarak ortak referanstan türeyen nesneler herhangi bir davranış değişikliğine gerek duymaksızın birbirlerinin yerine geçebilmelidirler.
+
+- Prensipleri anlamak için ne zaman ihlal edildiklerini anlamak önemlidir. Liskov'un ihlali ise;
+Bir nesnenin, arayüz tarafından dayatılan sözleşmedeki davranışları yerine getirmediği durumlarda LSP ilkesin ayrılık söz konusudur.
+
+--------------------------
+
+Interface Segregation Principle (Arayüz Ayrım Prensibi)
+
+- Bir nesnenin yapması gereken her farklı davranış(lar)ın o davranış(lar)a odaklanmış özel interface'ler ile eşleşmesini öneren prensiptir.
+
+- Böylece ihtiyaç olan davranışları, temsil eden interface'ler eşliğinde ilgili sınıflara kazandırabilir ve hiçbir sınıfın kullanmadığı bir imzayı
+zorla implement etmek zorunda kalmaksızın inşa sürecine devam edebiliriz.
+
+IPrinter (interface)
++Print()
++Scan()
++Fax()
++PrintDublex()
+
+bütün printer'lar için ortak olmayan özellikleri interface'imize koyarsak eğer,
+
+HPPrinter:IPrinter 			SamsungPrinter:IPrinter 		LexMarkPrinter:IPrinter //tüm bu printer'lar IPrinter sözleşmesini uygulamaktadır.
+-Hepsini destekliyor.		-PrinDublex destelemiyor.		-PrinDublex desteklemiyor.
+							-Scan desteklemiyor.
+							
+- Madem desteklenmiyor neden implement edildi? Zoraki olarak bu interface'in uygulamasıyla bu metotları buraya koyduk.
+Demek ki tasarımda bir sorun var.	
+
+- Burada her bir printer nesnesi için geçerli olmayacak maddeleri ayrı sözleşme-interface olarak tasarla. Çünkü bunlar evrensel değil.
+
+- Sınıflara itiyaç duymadıkları imzaları arayüzlerle zorlayarak işlevsiz metotlar eklemek ISP'i ihlal etmektir.						
+- Böylece geliştiriciler açısından ihtiyaç duymayacakları metotlar intellisense'da kalabalığa sebebiyet verip kafalarını karıştırabilir.
+
+namespace Interface_Segregation_Principle_NotIdealCode;
+
+interface IPrinter
+{
+    void Print();
+    void Scan();
+    void Fax();
+    void PrintDuplex();
+}
+
+class HPPrinter : IPrinter
+{
+    public void Print() { }
+    public void Scan() { } //misal olarak burada bir değişiklik yaptığımızda bu fonksiyonu kullanan aşağıdaki sınıflara da yansıtmamız gerekli.
+    public void Fax() { }
+    public void PrintDuplex() { }
+}
+class SamsungPrinter : IPrinter
+{
+    public void Print() { }
+    public void Fax() { }
+
+     public void Scan()
+    {
+        throw new NotSupportedException();
+    }
+
+    public void PrintDuplex()
+    {
+        throw new NotSupportedException();
+    }
+}
+
+class LexmarkPrinter
+{
+    public void Print() { }
+    public void Fax() { }
+
+    public void Scan() { }
+
+    public void PrintDuplex()
+    {
+        throw new NotSupportedException();
+    }
+}
+
+program.cs'de
+
+using Interface_Segregation_Principle_NotIdealCode;
+
+SamsungPrinter printer = new();
+printer.PrintDuplex(); //Samsung'da böyle bir hizmet yok ama geliştirici bunu bilmiyor olabilir.
+
+//O yüzden hata alacağız.
+
+- Interface'de oluşacak herhangi bir değişiklik ister istemez o değişiklikle alakası olmayan sınıflarda da side effect(yan etki) yaratıp, 
+oradaki problemlerle ilgilenmeye zorlayabilir. Yani bakımı lüzumsuz yere zorlaştırabilir.
+
+- Hacmi geniş olan ve davranışsal olarak farklı yetenekleri içerisinde barındıran interface'ler mümkkün mertebe yeteneklerine göre parçalanarak
+küçültülmelidirler.
+
+- Kümülatif olarak yetenekleri barındıran interface'ler sınıflara uygulandığı taktirde çoğu sınıf için birçok yeteneğe ihtiyaç duyulmayacağı için anlamsız
+kalıp olarak tanımlanıp kalacaktırlar. Bu istenmeyen bir durumdur.
+
+- Genellikle bu tarz istenmeyen durumlar salt olarak NotSupportedException veya NotImplementedException gibi hataların fırlatıldığı metotlarda fark 
+edilebilmektedirler. Bu tarz metotlar varsa ISP açısından olayın/inşanın değerlendirilmesinde fayda vardır.
+
+IPrint(interface)
++Print()
+
+IScan(interface)
++Scan()
+
+IFax(interface)
++Fax()
+
+IPrintDublex(interface)
++PrintDublex()
+
+HPPrinter: IPrint, IScan, IFax, IPrintDublex tüm interface'leri ve dolayısıyla metotlarını kullanacak.
+
+SamsungPrinter: IPrint, IFax sadece ilgili interface'leri ve dolayısıyla metotlarını kullanacak.
+
+LexmarkPrinter: IPrint, IScan, IFax sadece ilgili interface'leri ve dolayısıyla metotlarını kullanacak.
+
+Örnek olarak, yukarıdaki tasarımda LexMark printer kullanan birisi yanlışlıkla gidip PrintDublex'i kullanamaz. Çünkü artık içerisinde
+öyle bir member yok. Ya da Samsung'da scan kullanamaz.
+
+İdeal kod yazımını göstermek gerekirse;
+
+namespace Interface_Segregation_Principle_IdealCode;
+
+interface IPrint
+{
+    void Print();
+}
+interface IScan
+{
+    void Scan();
+}
+interface IFax
+{  
+    void Fax();
+}
+interface IPrintDublex
+{    
+    void PrintDuplex();
+}
+class HPPrinter : IPrint, IScan, IFax, IPrintDublex
+{
+    public void Print() { }
+    public void Scan() { }
+    public void Fax() { }
+    public void PrintDuplex() { }
+}
+class SamsungPrinter : IPrint, IFax
+{
+    public void Print() { }
+    public void Fax() { }
+
+}
+
+class LexmarkPrinter : IPrint, IScan, IFax
+{
+    public void Print() { }
+    public void Fax() { }
+    public void Scan() { }
+}
+
+Program.cs'e bakalım.
+
+using Interface_Segregation_Principle_IdealCode;
+
+SamsungPrinter printer = new();
+printer.Fax();
+
+//printer. dediğimiz an zaten interface içinde olmayan metotlar gelmeyecektir.
+//kod hatasız çalışacaktır.
+
+- Yazılımdaki davranışları tek bir bütün olarak tutmaktansa birbirlerinden bağımsız olacak şekilde birden çok parçaya bölmek ideal kod yapısını
+ortaya çıkarır.
+
+- ISP ihlali, doğrudan LSP ve SRP'nın da ihlaline sebebiyet vermektedir.
+
+- ISP, sınıf tarafından desteklenmeyecek metotların lüzumsuz yere tanımlanmamasına karşı odaklanırken, LSP ise benzer şekilde bu tarz işlevsiz 
+metotların barındırıldığı sınıflardan olan nesnelerin kendi aralarında da olan değişimleri sürecinde patlama veya boşa çıkma riskini
+ortadan kaldırmaya odaklanmaktadır.
+
+- SRP'da ise sınıfların değişmesi için yalnızca tek bir nedenin olması gerektiği söylenirken, ISP'de de hacmi büyük arayüzler yüzünden implemente edilmiş
+alakasız yöntemlerin değiştirilmesi gibi durumlarda ilgili sınıfta değişiklik gerekeceğinden, dolaylı yoldan sınıfların sadece tek bir değişim nedeni olması
+gerekmektedir.
+
+--------------------
+
+Dependency Inversion Principle (Bağımlılın Tersine Çevrilmesi Prensibi) Nedir?
+
+- DIP;bir sınıfın herhangi bir türe olan bağımlılık durumuna karşı dikkatimizi çeken ve bu bağlılığın mümkün olduğunda tersine çevrilmesini öneren ilkedir.
+
+- Bu prensip, geliştiricinin herhangi bir türe bağımlı olmadığını, bilaskis türlerin/yani nesnelerin geliştiriciye bağımlı olduğunu savunur.
+
+-Örnek olarak Askeriyede herhangi bir komutanın tek bir askere bağımlı olması oldukça saçma olacağından dolayı bu hiyerarşik düzlemde bağımlılıklar olması
+gerektiği gibi tersine çevrilmiş ve asker komutaana bağımlı hale gelmiştir.
+
+Komutan sadece belirli tek bir asker ile değil, daha üst bir kavram olan 'Asker' ile talimatlarını yürütecek ve böylece komutanın herhangi bir askere
+bağımlılığı olmayacak, görev alabilmek için askerler komutana bağlı olacaktır.
+
+- Ya da Mail Service uygulamamız var diyelim. Eğer ki içerisinde direkt Gmail'i kullanıyorsa bu durumda Gmail'e bağımlı demektir. Böylece yapacağı tüm mail
+işlemlerini sadece Gmail ile yapabilecektir.
+
+Bu bağımlılık ihtiyaca göre diğer mail server'larını kullanma ihtiyacında kodda değişikliğe sebebp olacaktır.
+
+Fakat araya bir IMailServer interface'i koyarak Mail Service'imizin çalışma yapacağı sunucuyu bu interface üzerinden seçmesini sağlarsak,
+artık bağımlılığı tersine çevirmiş olacağız.
+
+Bir başka deyişle Dependency Inversion prensibi gereği bağımlılıklrı ters çevirecek bir yaklaşım sergilersek eğer artık Mail Service herhangi bir 
+Mail Server'a bağımlı olmayacak, tüm mail server'ları karşılayabilecek 'IMailServer' arayüzüyle çalışacaktır. Böylece Mail Service'de herhangi bir 
+mail server'lardan hangisi çağrılırsa o iş yapacaktır. Bu da mail serverların Mail Service'e bağlı olduğu nlamına gelecektir.
+
+- Dependency Inversion uygularken nesnelerin iletişimini soyut/abstract yapılar üzerinden gerçekleştiririz.
+
+İdeal olmayan durumda;
+
+namespace Dependency_Inversion_Principle_NotIdealCode;
+
+class MailService
+{
+    public void SendMail(Gmail gmail) //Gmail'e bağımlılık var..
+    {
+        gmail.Send("...");
+    }
+}
+
+class Gmail
+{
+    public void Send(string mail)
+    {
+        //...
+    }
+}
+
+class Yandex
+{
+    public void SendMail(string mail, string to)
+    {
+        //...
+    }
+}
+class Hotmail
+{
+    public void Send(string mail)
+    {
+        //...
+    }
+}
+
+Program.cs'de,
+
+using Dependency_Inversion_Principle_NotIdealCode;
+
+MailService mailService = new();
+mailService.SendMail(new Gmail()); //ee gmail kapandı? Yan etkileri hissedilir.
+
+Hiç hoş değil..
+
+İdeal olan durumda;
+
+namespace Dependency_Inversion_Principle_IdealCode;
+
+class MailService
+{
+    public void SendMail(IMailServer mailServer, string to, string body) //Gmail'e bağımlılık var..
+    {
+        mailServer.Send(to, body);
+    }
+}
+
+interface IMailServer //bağımlılık tersine döndü. 
+{
+    void Send(string to, string body);
+}
+
+class Gmail : IMailServer
+{
+    public void Send(string to, string mail)
+    {
+        //...
+    }
+}
+
+class Yandex : IMailServer
+{
+    public void Send(string to, string mail)
+    {
+        //...
+    }
+}
+class Hotmail : IMailServer
+{
+    public void Send(string to, string mail)
+    {
+        //...
+    }
+}
+
+Program.cs'e bakacak olursak;
+
+using Dependency_Inversion_Principle_IdealCode;
+
+MailService mailService = new();
+
+mailService.SendMail(new Gmail(), "...", "...");
+mailService.SendMail(new Hotmail(), "...", "...");
+mailService.SendMail(new Yandex(), "...", "...");
+
+//IMailServer'dan çalışıyoruz artık. Davranışı biz belirlediğimiz için davranışları sergileyecek alt sınıflarda bize bağımlı olacak.
+
+- Yazılımda gidişat tek bir davranışa bağımlı olmamalı, bilakis davranışlar sizin kararınıza bağımlı olmalıdır.
+
+- Dependecy Inversion prensibi, bir sınıfın concrete/somut sınıflara değil onların abstraction'larına bağlı olması gerektiğini önerir. Böylece
+o sınıf herhangi bir somut sınıfa bağımlı olmayacak, tam tersi somut sınıf(lar) ilgili sınıfa bağımlılık sergiliyor olacaktır.
+
+- Böylece hiçbir sınıf concrete/somut yapılanmalara değil onların abstraction'larına/soyut yapılarına güvenecektirler.
+
+- Dependency Inversion prensibi; sınıflar arasındaki bağımlılığı soyutlamakta, uygulamanın ihtiyaca göre davranış değişikliğine istikrar getirmekte ve
+sistem açısından sürdürülebilirlik ve ölçeklenebilirlik sağlamaktadır.

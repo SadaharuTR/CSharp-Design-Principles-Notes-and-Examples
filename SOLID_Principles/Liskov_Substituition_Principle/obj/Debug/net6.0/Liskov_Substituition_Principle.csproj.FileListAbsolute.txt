@@ -1,0 +1,15 @@
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Liskov_Substituition_Principle\bin\Debug\net6.0\Liskov_Substituition_Principle.exe
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Liskov_Substituition_Principle\bin\Debug\net6.0\Liskov_Substituition_Principle.deps.json
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Liskov_Substituition_Principle\bin\Debug\net6.0\Liskov_Substituition_Principle.runtimeconfig.json
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Liskov_Substituition_Principle\bin\Debug\net6.0\Liskov_Substituition_Principle.dll
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Liskov_Substituition_Principle\bin\Debug\net6.0\Liskov_Substituition_Principle.pdb
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Liskov_Substituition_Principle\obj\Debug\net6.0\Liskov_Substituition_Principle.csproj.AssemblyReference.cache
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Liskov_Substituition_Principle\obj\Debug\net6.0\Liskov_Substituition_Principle.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Liskov_Substituition_Principle\obj\Debug\net6.0\Liskov_Substituition_Principle.AssemblyInfoInputs.cache
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Liskov_Substituition_Principle\obj\Debug\net6.0\Liskov_Substituition_Principle.AssemblyInfo.cs
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Liskov_Substituition_Principle\obj\Debug\net6.0\Liskov_Substituition_Principle.csproj.CoreCompileInputs.cache
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Liskov_Substituition_Principle\obj\Debug\net6.0\Liskov_Substituition_Principle.dll
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Liskov_Substituition_Principle\obj\Debug\net6.0\refint\Liskov_Substituition_Principle.dll
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Liskov_Substituition_Principle\obj\Debug\net6.0\Liskov_Substituition_Principle.pdb
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Liskov_Substituition_Principle\obj\Debug\net6.0\Liskov_Substituition_Principle.genruntimeconfig.cache
+C:\Users\acdem\OneDrive\Masaüstü\Design Principles Eğitimleri\SOLID_Principles\Liskov_Substituition_Principle\obj\Debug\net6.0\ref\Liskov_Substituition_Principle.dll

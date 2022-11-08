@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v6.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v6.0": {
+      "Liskov_Substituition_Principle/1.0.0": {
+        "runtime": {
+          "Liskov_Substituition_Principle.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Liskov_Substituition_Principle/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
